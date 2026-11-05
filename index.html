@@ -145,13 +145,16 @@ card.innerHTML = `
         });
     }
 
-    function addToCart(id) {
-        const item = menuData.find(i => i.id === id);
-        const inCart = cart.find(i => i.id === id);
-        if (inCart) inCart.quantity += 1;
-        else cart.push({ ...item, quantity: 1 });
-        saveCart();
-        updateCartUI();
+function addToCart(id) {
+    const item = menuData.find(i => i.id === id);
+    const inCart = cart.find(i => i.id === id);
+    if (inCart) {
+        inCart.quantity += 1;
+    } else {
+        cart.push({ ...item, quantity: 1 });
+    }
+    saveCart();
+    updateCartUI()
     }
 
     function saveCart() { localStorage.setItem('chudomania_cart', JSON.stringify(cart)); }
