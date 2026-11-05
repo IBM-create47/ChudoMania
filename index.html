@@ -117,12 +117,12 @@ const imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${i
 
 card.innerHTML = `
     ${imgHtml}
-        <div class="card-title">${item.title}</div>
-        <div class="card-bottom">
-            <div class="card-price">${item.price} ₽</div>
-            <button class="add-btn" onclick="addToCart('${item.id}')">В корзину</button>
-        </div>
-    `;
+    <div class="card-title">${item.title}</div>
+    <div class="card-bottom">
+        <div class="card-price">${item.price} ₽</div>
+        <button class="add-btn" onclick="addToCart('${item.id}')">В корзину</button>
+    </div>
+`;
     grid.appendChild(card);
 });    
         
