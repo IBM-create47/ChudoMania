@@ -112,11 +112,11 @@ async function loadMenuFromDB() {
     const card = document.createElement('div');
     card.className = 'menu-card';
 
-    // Проверяем, есть ли фото. Если нет — ставим заглушку.
-    const imgSrc = item.image ? item.image : 'https://via.placeholder.com/280x160/1e1e1e/ff6b00?text=Нет+фото';
+    // Если фото есть - показываем, если нет - не выводим тег img
+const imgHtml = item.image ? `<img src="${item.image}" class="card-img" alt="${item.title}">` : '';
 
-    card.innerHTML = `
-        <img src="${imgSrc}" class="card-img" alt="${item.title}">
+card.innerHTML = `
+    ${imgHtml}
         <div class="card-title">${item.title}</div>
         <div class="card-bottom">
             <div class="card-price">${item.price} ₽</div>
