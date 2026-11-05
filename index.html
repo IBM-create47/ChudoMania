@@ -108,20 +108,24 @@ async function loadMenuFromDB() {
         const grid = document.getElementById('menu-grid');
         grid.innerHTML = '';
         const filtered = category === 'Все' ? menuData : menuData.filter(i => i.category === category);
+    filtered.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'menu-card';
+
+    // Проверяем, есть ли фото. Если нет — ставим заглушку.
+    const imgSrc = item.image ? item.image : 'https://via.placeholder.com/280x160/1e1e1e/ff6b00?text=Нет+фото';
+
+    card.innerHTML = `
+        <img src="${imgSrc}" class="card-img" alt="${item.title}">
+        <div class="card-title">${item.title}</div>
+        <div class="card-bottom">
+            <div class="card-price">${item.price} ₽</div>
+            <button class="add-btn" onclick="addToCart('${item.id}')">В корзину</button>
+        </div>
+    `;
+    grid.appendChild(card);
+});    
         
-        filtered.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'menu-card';
-            card.innerHTML = `
-                <img src="${item.image}" class="card-img" alt="${item.title}">
-                <div class="card-title">${item.title}</div>
-                <div class="card-bottom">
-                    <div class="card-price">${item.price} ₽</div>
-                    <button class="add-btn" onclick="addToCart(${item.id})">В корзину</button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
     }
 
     function renderFilters() {
