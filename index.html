@@ -89,69 +89,51 @@ async function loadMenuFromDB() {
     renderMenu('Все');
     updateCartUI();
 }
-        function renderMenu(category) {
-    const grid = document.getElementById('menu-grid');
-    grid.innerHTML = '';
-    const filtered = category === 'Все' ? menuData : menuData.filter(i => i.category === category);
-
-    filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'menu-card';
-        const imgSrc = item.image ? item.image : 'https://via.placeholder.com/280x160/1e1e1e/ff6b00?text=Нет+фото';
-        
-        card.innerHTML = `
-            <img src="${imgSrc}" class="card-img" alt="${item.title}">
-            <div class="card-title">${item.title}</div>
-            <div class="card-bottom">
-                <div class="card-price">${item.price} ₽</div>
-                <button class="add-btn" onclick="addToCart('${item.id}')">В корзину</button>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-}
-
-function renderFilters() {
-    const filters = document.getElementById('filters');
-    const cats = ['Все', ...new Set(menuData.map(i => i.category))];
-    filters.innerHTML = '';
-    cats.forEach(c => {
-        const btn = document.createElement('button');
-        btn.className = `filter-btn ${c === 'Все' ? 'active' : ''}`;
-        btn.textContent = c;
-        btn.onclick = () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderMenu(c);
-        };
-        filters.appendChild(btn);
-    });
-}
-
-function addToCart(id) {
+        function addToCart(id) {
+    // Ищем блюдо по ID
     const item = menuData.find(i => i.id === id);
-    if (!item) { alert("Ошибка! Блюдо не найдено. ID: " + id); return; }
+    
+    // Если не нашли - выводим ошибку в консоль
+    if (!item) {
+        console.log("Не найдено блюдо с ID:", id);
+        return;
+    }
+
+    // Ищем, есть ли уже в корзине
     const inCart = cart.find(i => i.id === id);
-    if (inCart) inCart.quantity += 1;
-    else cart.push({ ...item, quantity: 1 });
+    
+    if (inCart) {
+        inCart.quantity += 1;
+    } else {
+        cart.push({ ...item, quantity: 1 });
+    }
+    
     saveCart();
     updateCartUI();
 }
 
-function saveCart() { localStorage.setItem('chudomania_cart', JSON.stringify(cart)); }
+function saveCart() { 
+    localStorage.setItem('chudomania_cart', JSON.stringify(cart)); 
+}
 
 function updateCartUI() {
     const count = cart.reduce((s, i) => s + i.quantity, 0);
-    document.getElementById('cart-count').textContent = count;
+    const countEl = document.getElementById('cart-count');
+    if (countEl) countEl.textContent = count;
+    
     const itemsDiv = document.getElementById('cart-items');
     itemsDiv.innerHTML = '';
     let total = 0;
+    
     cart.forEach(i => {
         total += i.price * i.quantity;
         itemsDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${i.title} x${i.quantity}</span> <b>${i.price * i.quantity} ₽</b></div>`;
     });
-    document.getElementById('cart-total-price').textContent = total + ' ₽';
-        }
+    
+    const totalEl = document.getElementById('cart-total-price');
+    if (totalEl) totalEl.textContent = total + ' ₽';
+}
+
                 document.getElementById('open-cart-btn').onclick = () => document.getElementById('cart-panel').classList.add('active');
         document.getElementById('close-cart-btn').onclick = () => document.getElementById('cart-panel').classList.remove('active');
 
