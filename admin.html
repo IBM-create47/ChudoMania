@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель ЧудоМании</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: white; padding: 20px; max-width: 600px; margin: 0 auto; }
+        h1 { color: #ff6b00; text-align: center; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; box-sizing: border-box; font-size: 16px; }
+        input, select { background: #2a2a2a; color: white; border: 1px solid #444; }
+        button { background: #ff6b00; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #e65c00; }
+        .btn-del { background: #ff4444; width: auto; padding: 8px 15px; margin: 0; }
+        .btn-del:hover { background: #cc0000; }
+        .item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; }
+        .item:last-child { border-bottom: none; }
+        .item-info { flex: 1; }
+        .item-title { font-weight: bold; }
+        .item-price { color: #a0a0a0; font-size: 0.9rem; }
+    </style>
+</head><body>
+    <h1>⚙️ Админка</h1>
+
+    <div class="card">
+        <h3>Добавить блюдо</h3>
+        <input type="text" id="title" placeholder="Название блюда">
+        <input type="number" id="price" placeholder="Цена (₽)">
+        <select id="category">
+            <option value="Бургеры">Бургеры</option>
+            <option value="Шаурма">Шаурма</option>
+            <option value="Крылышки">Крылышки</option>
+            <option value="Фастфуд">Фастфуд</option>
+            <option value="Пицца">Пицца</option>
+            <option value="Роллы">Роллы</option>
+            <option value="Напитки">Напитки</option>
+        </select>
+        <input type="text" id="image" placeholder="Ссылка на фото (URL)">
+        <button onclick="addItem()">Добавить блюдо</button>
+    </div>
+
+    <div class="card">
+        <h3>Список блюд</h3>
+        <div id="menu-list">Загрузка...</div>
+    </div>
+
+    <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// Ваши ключи Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyC5S1msxXkjsyuIzm_VRHjiR87SkdEe-IM",
+    authDomain: "chudomania-admin.firebaseapp.com",
+    projectId: "chudomania-admin",
+    storageBucket: "chudomania-admin.appspot.com",
+    messagingSenderId: "676365945710",
+    appId: "1:676365945710:web:09cb48ce13463a22c70f7f"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Функция добавления блюда
+window.addItem = async () => {
+    const title = document.getElementById('title').value;
+    const price = parseInt(document.getElementById('price').value);
+    const category = document.getElementById('category').value;
+    const image = document.getElementById('image').value;
+
+    if (!title || !price) return alert('Заполните название и цену!');
+
+    try {
+        await addDoc(collection(db, "menu"), { title, price, category, image });
+        alert('Блюдо добавлено!');
+        document.getElementById('title').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('image').value = '';
+        loadMenu();
+    } catch (e) {
+        alert('Ошибка: ' + e.message);
+    }
+};
+              // Загрузка списка блюд
+        async function loadMenu() {
+            const list = document.getElementById('menu-list');
+            list.innerHTML = '';
+            const querySnapshot = await getDocs(collection(db, "menu"));
+            
+            querySnapshot.forEach((docSnap) => {
+                const item = docSnap.data();
+                const id = docSnap.id;
+                
+                const el = document.createElement('div');
+                el.className = 'item';
+                el.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-price">${item.price} ₽ | ${item.category}</div>
+                    </div>
+                    <button class="btn-del" onclick="deleteItem('${id}')">Удалить</button>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        // Удаление блюда
+        window.deleteItem = async (id) => {
+            if (confirm('Удалить это блюдо?')) {
+                await deleteDoc(doc(db, "menu", id));
+                loadMenu();
+            }
+        };
+
+        loadMenu();
+    </script>
+</body>
+</html>
