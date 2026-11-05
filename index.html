@@ -4,42 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ЧудоМания — Доставка еды</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #121212; --card: #1e1e1e; --accent: #ff6b00; --text: #ffffff; --muted: #a0a0a0; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding-bottom: 80px; }
-        h1 { text-align: center; font-size: 2rem; margin: 20px 0; text-transform: uppercase; }
-        .filters { display: flex; overflow-x: auto; gap: 10px; padding: 10px 20px; }
-        .filter-btn { background: var(--card); color: var(--text); border: 1px solid #333; padding: 10px 20px; border-radius: 50px; cursor: pointer; white-space: nowrap; }
-        .filter-btn.active { background: var(--accent); border-color: var(--accent); }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .menu-card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid #2a2a2a; display: flex; flex-direction: column; }
+        :root { --bg-color: #121212; --surface-color: #1e1e1e; --accent-color: #ff6b00; --text-main: #ffffff; --text-muted: #a0a0a0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 80px; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+        
+        header { text-align: center; padding: 40px 20px 20px; background: linear-gradient(180deg, #1a1a1a 0%, var(--bg-color) 100%); }
+        .logo { font-size: 2.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+        .subtitle { color: var(--accent-color); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; font-size: 0.9rem; }
+        
+        .filters { display: flex; overflow-x: auto; gap: 10px; padding: 20px; scrollbar-width: none; position: sticky; top: 0; background-color: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px); z-index: 10; }
+        .filter-btn { background-color: var(--surface-color); color: var(--text-main); border: 1px solid #333; padding: 10px 20px; border-radius: 50px; font-size: 0.95rem; cursor: pointer; white-space: nowrap; }
+        .filter-btn.active { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; }
+        
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 10px 20px; max-width: 1200px; margin: 0 auto; }
+        .menu-card { background-color: var(--surface-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; border: 1px solid #2a2a2a; }
         .card-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 15px; }
         .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .card-price { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
-        .add-btn { background: transparent; color: var(--text); border: 1px solid var(--accent); padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+        .card-price { font-size: 1.3rem; font-weight: 700; color: var(--accent-color); }
+        .add-btn { background-color: transparent; color: var(--text-main); border: 1px solid var(--accent-color); padding: 8px 16px; border-radius: 8px; cursor: pointer; }
         
-        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: white; border: none; border-radius: 50px; padding: 15px 25px; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 100; }
-        .cart-count { background: white; color: var(--accent); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-        .cart-panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100vh; background: var(--card); z-index: 201; display: flex; flex-direction: column; transition: right 0.3s; }
+        .cart-btn { position: fixed; bottom: 20px; right: 20px; background-color: var(--accent-color); color: white; border: none; border-radius: 50px; padding: 15px 25px; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; z-index: 100; }
+        .cart-count { background-color: white; color: var(--accent-color); border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .cart-panel { position: fixed; top: 0; right: -100%; width: 100%; max-width: 400px; height: 100vh; background-color: var(--surface-color); z-index: 201; display: flex; flex-direction: column; transition: right 0.3s; }
         .cart-panel.active { right: 0; }
         .cart-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; }
         .close-cart { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
         .cart-items { flex: 1; overflow-y: auto; padding: 20px; }
         .cart-footer { padding: 20px; border-top: 1px solid #333; }
-        .checkout-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
+        .checkout-btn { width: 100%; background-color: var(--accent-color); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; }
         .form-input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
     </style>
 </head>
 <body>
-    <h1>ЧудоМания</h1>
-    
+    <header>
+        <div class="logo">ЧудоМания</div>
+        <div class="subtitle">Доставка еды</div>
+    </header>
+
     <div class="filters" id="filters"></div>
     <main class="menu-grid" id="menu-grid"></main>
-    
+
     <button class="cart-btn" id="open-cart-btn">🛒 Корзина <span class="cart-count" id="cart-count">0</span></button>
-    
+
     <aside class="cart-panel" id="cart-panel">
         <div class="cart-header">
             <h2>Ваш заказ</h2>
@@ -47,11 +57,10 @@
         </div>
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 1.2rem; font-weight: bold;">
                 <span>Итого:</span> <span id="cart-total-price">0 ₽</span>
             </div>
             <button class="checkout-btn" id="checkout-btn">Оформить заказ</button>
-            
             <div id="checkout-form" style="display: none; margin-top: 15px;">
                 <input type="text" id="client-name" class="form-input" placeholder="Ваше имя">
                 <input type="tel" id="client-phone" class="form-input" placeholder="Телефон">
@@ -60,109 +69,156 @@
             </div>
         </div>
     </aside>
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-    <script type="module">import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyC5S1msxXkjsyuIzm_VRHjiR87SkdEe-IM",
-    authDomain: "chudomania-admin.firebaseapp.com",
-    projectId: "chudomania-admin",
-    storageBucket: "chudomania-admin.appspot.com",
-    messagingSenderId: "676365945710",
-    appId: "1:676365945710:web:09cb48ce13463a22c70f7f"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-let menuData = [];
-let cart = JSON.parse(localStorage.getItem('chudomania_cart')) || [];
-
-async function loadMenuFromDB() {
-    const querySnapshot = await getDocs(collection(db, "menu"));
-    menuData = [];
-    querySnapshot.forEach((doc) => {
-        menuData.push({ id: doc.id, ...doc.data() });
-    });
-    renderFilters();
-    renderMenu('Все');
-    updateCartUI();
-}
-        function addToCart(id) {
-    // Ищем блюдо по ID
-    const item = menuData.find(i => i.id === id);
-    
-    // Если не нашли - выводим ошибку в консоль
-    if (!item) {
-        console.log("Не найдено блюдо с ID:", id);
-        return;
-    }
-
-    // Ищем, есть ли уже в корзине
-    const inCart = cart.find(i => i.id === id);
-    
-    if (inCart) {
-        inCart.quantity += 1;
-    } else {
-        cart.push({ ...item, quantity: 1 });
-    }
-    
-    saveCart();
-    updateCartUI();
-}
-
-function saveCart() { 
-    localStorage.setItem('chudomania_cart', JSON.stringify(cart)); 
-}
-
-function updateCartUI() {
-    const count = cart.reduce((s, i) => s + i.quantity, 0);
-    const countEl = document.getElementById('cart-count');
-    if (countEl) countEl.textContent = count;
-    
-    const itemsDiv = document.getElementById('cart-items');
-    itemsDiv.innerHTML = '';
-    let total = 0;
-    
-    cart.forEach(i => {
-        total += i.price * i.quantity;
-        itemsDiv.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${i.title} x${i.quantity}</span> <b>${i.price * i.quantity} ₽</b></div>`;
-    });
-    
-    const totalEl = document.getElementById('cart-total-price');
-    if (totalEl) totalEl.textContent = total + ' ₽';
-}
-
-                document.getElementById('open-cart-btn').onclick = () => document.getElementById('cart-panel').classList.add('active');
-        document.getElementById('close-cart-btn').onclick = () => document.getElementById('cart-panel').classList.remove('active');
-
-        document.getElementById('checkout-btn').onclick = () => {
-            document.getElementById('checkout-btn').style.display = 'none';
-            document.getElementById('checkout-form').style.display = 'block';
+        // Ваши ключи Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5S1msxXkjsyuIzm_VRHjiR87SkdEe-IM",
+            authDomain: "chudomania-admin.firebaseapp.com",
+            projectId: "chudomania-admin",
+            storageBucket: "chudomania-admin.appspot.com",
+            messagingSenderId: "676365945710",
+            appId: "1:676365945710:web:09cb48ce13463a22c70f7f"
         };
 
-        document.getElementById('submit-order-btn').onclick = () => {
-            const name = document.getElementById('client-name').value;
-            const phone = document.getElementById('client-phone').value;
-            const address = document.getElementById('client-address').value;
-            
-            if(!name || !phone || !address) return alert('Заполните все поля!');
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        let menuData = [];
+        let cart = JSON.parse(localStorage.getItem('chudomania_cart')) || [];
+        
+        const menuGrid = document.getElementById('menu-grid');
+        const filtersContainer = document.getElementById('filters');
+        const cartPanel = document.getElementById('cart-panel');
+        const openCartBtn = document.getElementById('open-cart-btn');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalPrice = document.getElementById('cart-total-price');
+        const cartCount = document.getElementById('cart-count');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const checkoutForm = document.getElementById('checkout-form');
+        const submitOrderBtn = document.getElementById('submit-order-btn');
+        const myPhone = "79323332823";
 
-            let text = `Заказ в ЧудоМании!\nИмя: ${name}\nТел: ${phone}\nАдрес: ${address}\n\nСостав:\n`;
-            cart.forEach(i => text += `${i.title} x${i.quantity}\n`);
-            
-            window.open(`https://wa.me/79323332823?text=${encodeURIComponent(text)}`, '_blank');
-            
-            cart = [];
+        // 1. Загрузка меню из базы данных
+        async function loadMenuFromDB() {
+            const querySnapshot = await getDocs(collection(db, "menu"));
+            menuData = [];
+            querySnapshot.forEach((doc) => {
+                menuData.push({ id: doc.id, ...doc.data() });
+            });
+            renderFilters();
+            renderMenu('Все');
+            updateCartUI();
+        }
+
+        // 2. Отрисовка фильтров
+        function renderFilters() {
+            const categories = ['Все', ...new Set(menuData.map(item => item.category))];
+            filtersContainer.innerHTML = '';
+            categories.forEach(category => {
+                const btn = document.createElement('button');
+                btn.className = `filter-btn ${category === 'Все' ? 'active' : ''}`;
+                btn.textContent = category;
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderMenu(category);
+                };
+                filtersContainer.appendChild(btn);
+            });
+        }
+
+        // 3. Отрисовка меню
+        function renderMenu(category) {
+            menuGrid.innerHTML = '';
+            const filteredData = category === 'Все' 
+                ? menuData 
+                : menuData.filter(item => item.category === category);
+
+            filteredData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-card';
+                
+                // Заглушка, если нет фото
+                const imgSrc = item.image ? item.image : 'https://via.placeholder.com/280x160/1e1e1e/ff6b00?text=Нет+фото';
+
+                card.innerHTML = `
+                    <img src="${imgSrc}" class="card-img" alt="${item.title}">
+                    <div class="card-title">${item.title}</div>
+                    <div class="card-bottom">
+                        <div class="card-price">${item.price} ₽</div>
+                        <button class="add-btn" onclick="addToCart('${item.id}')">В корзину</button>
+                    </div>
+                `;
+                menuGrid.appendChild(card);
+            });
+        }
+
+        // 4. Добавление в корзину
+        window.addToCart = function(id) {
+            const item = menuData.find(i => i.id === id);
+            if (!item) return;
+
+            const existingItem = cart.find(i => i.id === id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...item, quantity: 1 });
+            }
             saveCart();
             updateCartUI();
-            document.getElementById('cart-panel').classList.remove('active');
-            document.getElementById('checkout-btn').style.display = 'block';
-            document.getElementById('checkout-form').style.display = 'none';
         };
 
-        loadMenuFromDB();
-    </script>
-</body>
-</html>
+        // 5. Обновление корзины
+        window.updateCartUI = function() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            cartItemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div style="text-align: center; color: #a0a0a0; margin-top: 20px;">Корзина пока пуста 🍔</div>';
+            } else {
+                cart.forEach(item => {
+                    const el = document.createElement('div');
+                    el.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px;";
+                    el.innerHTML = `
+                        <div>
+                            <div style="font-weight: 600;">${item.title}</div>
+                            <div style="color: #ff6b00; font-size: 0.9rem;">${item.price} ₽</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; background: #121212; padding: 5px 10px; border-radius: 8px;">
+                            <button onclick="changeQuantity('${item.id}', -1)" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">−</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="changeQuantity('${item.id}', 1)" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.2rem;">+</button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(el);
+                });
+            }
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotalPrice.textContent = `${totalPrice} ₽`;
+        };
+
+        // 6. Изменение количества (+/-)
+        window.changeQuantity = function(id, change) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+                saveCart();
+                updateCartUI();
+            }
+        };
+
+        function saveCart() {
+            localStorage.setItem('chudomania_cart', JSON.stringify(cart));
+        }
+
+        // 7. Управление панелью корзины
+        openCartBtn.onclick = () => cartPanel.classList.add('active');
+        closeCartBtn.oncl
