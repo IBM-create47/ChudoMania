@@ -130,7 +130,7 @@ function renderFilters() {
 
 function addToCart(id) {
     const item = menuData.find(i => i.id === id);
-    if (!item) return;
+    if (!item) { alert("Ошибка! Блюдо не найдено. ID: " + id); return; }
     const inCart = cart.find(i => i.id === id);
     if (inCart) inCart.quantity += 1;
     else cart.push({ ...item, quantity: 1 });
